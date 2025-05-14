@@ -25,7 +25,7 @@ app.get("/api/auth-test", authenticateToken, (req, res) => {
   res.json({ message: "not the magic word" });
 });
 
-app.use("/", router);
+app.use("/api", authenticateToken, router);
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}.`);
