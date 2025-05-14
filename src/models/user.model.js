@@ -9,7 +9,7 @@ async function createUser(email, displayName) {
   };
 
   try {
-    await knex("user").insert(userData);
+    await knex("user_data").insert(userData);
     return userData;
   } catch (error) {
     console.error(error);

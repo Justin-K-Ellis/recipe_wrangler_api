@@ -1,7 +1,11 @@
 import express from "express";
-import { createUser } from "../models/user.model";
+import { createUser } from "../models/user.model.js";
 
 const userController = express.Router();
+
+userController.get("/", async (req, res) => {
+  res.json({ message: "this is a test" });
+});
 
 userController.post("/", async (req, res) => {
   const { email } = req.body;
