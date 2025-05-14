@@ -1,13 +1,9 @@
 import knex from "../knex.js";
 import getUnixTime from "../utils/getUnixTime.js";
 
-async function createUser(user) {
-  const userId = user.user_id;
-  const email = user.email;
-
+async function createUser(email, displayName) {
   const userData = {
-    firebase_id: userId,
-    display_name: email.split("@")[0],
+    display_name: displayName,
     email: email,
     createdAt: getUnixTime(),
   };

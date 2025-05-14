@@ -4,8 +4,11 @@ import { createUser } from "../models/user.model";
 const userController = express.Router();
 
 userController.post("/", async (req, res) => {
+  const { email } = req.body;
+  const displayName = req.body.displayName || email.split("@")[0];
+
   try {
-    const newUser = createUser(req.user);
+    const newUser = createUser(email, displayName);
     res.json(newUser);
   } catch (error) {
     console.error(error);
