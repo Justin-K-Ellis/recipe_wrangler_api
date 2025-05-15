@@ -1,6 +1,7 @@
 import express from "express";
 import customRecipeModel from "../models/customRecipe.model.js";
 import knex from "../knex.js";
+import getUserIdFromEmail from "../utils/getUserIdFromEmail.js";
 
 const customRecipeController = express.Router();
 
@@ -9,12 +10,7 @@ customRecipeController.post("/", async (req, res) => {
   const email = req.user.email;
   const { name, cuisine, ingredients, steps, notes } = req.body;
   try {
-    const rows = await knex
-      .select("id")
-      .from("user_data")
-      .where("email", email);
-    const user_id = rows[0].id;
-    console.log("user id:", user_id);
+    const user_id = await getUserIdFromEmail(email);
 
     const recipe = await customRecipeModel.createRecipe(
       {
@@ -26,7 +22,6 @@ customRecipeController.post("/", async (req, res) => {
       },
       user_id
     );
-    console.log("recipe:", recipe);
 
     res.json(recipe);
   } catch (error) {
@@ -37,6 +32,26 @@ customRecipeController.post("/", async (req, res) => {
 });
 
 // == Read ==
+// Get all customer recipes
+customRecipeController.get("/", async (req, res) => {
+  const email = req.user.email;
+
+  try {
+    const user_id = await getUserIdFromEmail(email);
+    const recipes = await customRecipeModel.getallRecipes(user_id);
+
+    res.json(recipes);
+  } catch (error) {
+    console.error(error);
+    res.status(500);
+    res.json("Something went wrong when trying to get all custom recipes.");
+  }
+});
+
+// Get custom recipe by uuid
+customRecipeController.get("/:uuid", async (req, res) => {
+  const email = req.user.email;
+});
 
 // == Update ==
 

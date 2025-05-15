@@ -20,6 +20,41 @@ async function createRecipe(data, user_id) {
   }
 }
 
-const customRecipeModel = { createRecipe };
+// == Read ==
+// Read all custom recipes
+async function getallRecipes(user_id) {
+  try {
+    const rows = await knex
+      .select("uuid", "ingredients", "steps", "notes", "name", "cuisine")
+      .from("custom_recipe")
+      .where("user_id", user_id);
+    return rows;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Read custom recipe by uuid
+async function getRecipe(uuid) {
+  try {
+    const rows = await knex
+      .select(
+        "uuid",
+        "created_at",
+        "ingredients",
+        "steps",
+        "notes",
+        "name",
+        "cuisine"
+      )
+      .from("custom_recipe")
+      .where("uuid", uuid);
+    console.log(rows[0]);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const customRecipeModel = { createRecipe, getallRecipes, getRecipe };
 
 export default customRecipeModel;
