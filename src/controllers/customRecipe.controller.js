@@ -11,7 +11,6 @@ customRecipeController.post("/", async (req, res) => {
   const { name, cuisine, ingredients, steps, notes } = req.body;
   try {
     const user_id = await getUserIdFromEmail(email);
-
     const recipe = await customRecipeModel.createRecipe(
       {
         name,
@@ -51,6 +50,15 @@ customRecipeController.get("/", async (req, res) => {
 // Get custom recipe by uuid
 customRecipeController.get("/:uuid", async (req, res) => {
   const email = req.user.email;
+  const { uuid } = req.params;
+  try {
+    const user_id = await getUserIdFromEmail(email);
+    customRecipeModel.getRecipe(uuid, user_id);
+  } catch (error) {
+    console.error(error);
+    res.status(500);
+    res.json({ message: "An error occured when fetching recipe." });
+  }
 });
 
 // == Update ==
