@@ -50,6 +50,7 @@ async function getRecipe(uuid, user_id) {
       .from("custom_recipe")
       .where({ uuid: uuid, user_id: user_id });
     console.log(rows[0]);
+    return rows[0];
   } catch (error) {
     console.error(error);
   }

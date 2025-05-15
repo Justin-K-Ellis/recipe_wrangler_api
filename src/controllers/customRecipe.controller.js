@@ -53,7 +53,8 @@ customRecipeController.get("/:uuid", async (req, res) => {
   const { uuid } = req.params;
   try {
     const user_id = await getUserIdFromEmail(email);
-    customRecipeModel.getRecipe(uuid, user_id);
+    const result = await customRecipeModel.getRecipe(uuid, user_id);
+    res.json(result);
   } catch (error) {
     console.error(error);
     res.status(500);
