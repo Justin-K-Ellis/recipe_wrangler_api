@@ -8,7 +8,8 @@ const customRecipeController = express.Router();
 // == Create ==
 customRecipeController.post("/", async (req, res) => {
   const email = req.user.email;
-  const { name, cuisine, ingredients, steps, notes } = req.body;
+  const { name, cuisine, ingredients, steps, notes, readyInMinutes, servings } =
+    req.body;
   try {
     const user_id = await getUserIdFromEmail(email);
     const recipe = await customRecipeModel.createRecipe(
@@ -18,6 +19,8 @@ customRecipeController.post("/", async (req, res) => {
         ingredients,
         steps,
         notes,
+        readyInMinutes,
+        servings,
       },
       user_id
     );

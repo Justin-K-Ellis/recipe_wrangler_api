@@ -39,7 +39,7 @@ async function getRecipeById(id) {
   });
 
   const result = {
-    id: data.id,
+    externalId: data.id,
     name: data.title,
     ingredients: ingredients || [],
     steps: steps || [],

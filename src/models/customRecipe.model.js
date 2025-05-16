@@ -3,12 +3,15 @@ import getUnixTime from "../utils/getUnixTime.js";
 
 // == Create ==
 async function createRecipe(data, user_id) {
+  console.log("ready time and servings:", data.readyInMinutes, data.servings);
+
   const recipeData = {
     name: data.name,
     cuisine: data.cuisine,
     ingredients: JSON.stringify(data.ingredients),
     steps: JSON.stringify(data.steps),
-    notes: data.notes || "",
+    ready_in_minutes: data.readyInMinutes,
+    servings: data.servings,
     created_at: getUnixTime(),
     user_id: user_id,
   };
@@ -25,10 +28,18 @@ async function createRecipe(data, user_id) {
 async function getallRecipes(user_id) {
   try {
     const rows = await knex
-      .select("uuid", "ingredients", "steps", "notes", "name", "cuisine")
+      .select("uuid", "name", "cuisine")
       .from("custom_recipe")
       .where("user_id", user_id);
-    return rows;
+
+    const results = rows.map((row) => {
+      return {
+        externalId: row.uuid,
+        name: row.name,
+        cuisine: row.cuisine,
+      };
+    });
+    return results;
   } catch (error) {
     console.error(error);
   }
@@ -40,17 +51,23 @@ async function getRecipe(uuid, user_id) {
     const rows = await knex
       .select(
         "uuid",
-        "created_at",
+        "name",
         "ingredients",
         "steps",
-        "notes",
-        "name",
-        "cuisine"
+        "ready_in_minutes",
+        "servings"
       )
       .from("custom_recipe")
       .where({ uuid: uuid, user_id: user_id });
-    console.log(rows[0]);
-    return rows[0];
+    const result = {
+      externalId: rows[0].uuid,
+      name: rows[0].name,
+      ingredients: rows[0].ingredients,
+      steps: rows[0].steps,
+      readyInMinutes: rows[0].ready_in_minutes,
+      servings: rows[0].servings,
+    };
+    return result;
   } catch (error) {
     console.error(error);
   }
