@@ -7,6 +7,7 @@ const customRecipeController = express.Router();
 // == Create ==
 customRecipeController.post("/", async (req, res) => {
   const email = req.user.email;
+  console.error("post:", email);
   const { name, cuisine, ingredients, steps, notes, readyInMinutes, servings } =
     req.body;
   try {
@@ -36,6 +37,7 @@ customRecipeController.post("/", async (req, res) => {
 // Get all customer recipes
 customRecipeController.get("/", async (req, res) => {
   const email = req.user.email;
+  console.error("get all:", email);
 
   try {
     const user_id = await getUserIdFromEmail(email);
@@ -52,6 +54,7 @@ customRecipeController.get("/", async (req, res) => {
 // Get custom recipe by uuid
 customRecipeController.get("/:uuid", async (req, res) => {
   const email = req.user.email;
+  console.error("get by id:", email);
   const { uuid } = req.params;
   try {
     const user_id = await getUserIdFromEmail(email);
