@@ -44,6 +44,7 @@ async function getRecipeById(id) {
     ingredients: ingredients || [],
     steps: steps || [],
     readyInMinutes: data.readyInMinutes || 0,
+    servings: data.servings || 0,
   };
   return result;
 }
