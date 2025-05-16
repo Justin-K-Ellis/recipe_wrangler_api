@@ -7,7 +7,6 @@ externalRecipeController.get("/:searchTerm", async (req, res) => {
   const { searchTerm } = req.params;
   try {
     const result = await externalRecipeModel.getRecipeBySearch(searchTerm);
-    console.log(result);
     res.json(result);
   } catch (error) {
     console.error(error);

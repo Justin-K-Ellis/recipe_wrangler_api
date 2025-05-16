@@ -1,6 +1,5 @@
 import express from "express";
 import customRecipeModel from "../models/customRecipe.model.js";
-import knex from "../knex.js";
 import getUserIdFromEmail from "../utils/getUserIdFromEmail.js";
 
 const customRecipeController = express.Router();
@@ -64,9 +63,5 @@ customRecipeController.get("/:uuid", async (req, res) => {
     res.json({ message: "An error occured when fetching recipe." });
   }
 });
-
-// == Update ==
-
-// == Delete ==
 
 export default customRecipeController;

@@ -12,19 +12,6 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors());
 
-app.get("/api/auth-test", authenticateToken, (req, res) => {
-  const user = req.user;
-  console.log(user);
-  if (user) {
-    return res.json({
-      message: `Welcome to the protected router, ${user.email}.`,
-    });
-  }
-
-  res.status(401);
-  res.json({ message: "not the magic word" });
-});
-
 app.use("/api", authenticateToken, router);
 
 app.listen(port, () => {

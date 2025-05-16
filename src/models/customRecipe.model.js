@@ -3,8 +3,6 @@ import getUnixTime from "../utils/getUnixTime.js";
 
 // == Create ==
 async function createRecipe(data, user_id) {
-  console.log("ready time and servings:", data.readyInMinutes, data.servings);
-
   const recipeData = {
     name: data.name,
     cuisine: data.cuisine,
