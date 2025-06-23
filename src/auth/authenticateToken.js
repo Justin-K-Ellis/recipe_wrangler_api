@@ -10,6 +10,8 @@ const authenticateToken = async (req, res, next) => {
   try {
     const decodedToken = await auth.verifyIdToken(idToken);
     req.user = decodedToken;
+    console.log(req.user);
+
     next();
   } catch (error) {
     console.error("Error verifying token:", error);

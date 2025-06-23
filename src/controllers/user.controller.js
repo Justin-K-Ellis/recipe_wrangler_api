@@ -8,11 +8,12 @@ userController.get("/", async (req, res) => {
 });
 
 userController.post("/", async (req, res) => {
-  const { email } = req.body;
-  const displayName = req.body.displayName || email.split("@")[0];
+  const email = req.user.email;
+  const displayName = req.user.displayName || email.split("@")[0];
+  const firebaseId = req.user.uid;
 
   try {
-    const newUser = createUser(email, displayName);
+    const newUser = createUser(email, displayName, firebaseId);
     res.json(newUser);
   } catch (error) {
     console.error(error);
