@@ -42,6 +42,8 @@ customRecipeController.get("/", async (req, res) => {
   try {
     const user_id = await getUserIdFromEmail(email);
     const recipes = await customRecipeModel.getallRecipes(user_id);
+    console.log("User recipes:");
+    console.log(recipes);
 
     res.json(recipes);
   } catch (error) {
