@@ -69,4 +69,22 @@ customRecipeController.get("/:uuid", async (req, res) => {
   }
 });
 
+// Delete custom recipe by uuid
+customRecipeController.delete("/:recipeId", async (req, res) => {
+  const { recipeId } = req.params;
+  const email = req.user.email;
+  const userId = await getUserIdFromEmail(email);
+
+  try {
+    const result = customRecipeModel.deleteRecipe(recipeId, userId);
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500);
+    res.json({
+      message: "An error occurred when trying to delete this recipe.",
+    });
+  }
+});
+
 export default customRecipeController;

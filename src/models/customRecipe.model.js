@@ -71,6 +71,25 @@ async function getRecipe(uuid, user_id) {
   }
 }
 
-const customRecipeModel = { createRecipe, getallRecipes, getRecipe };
+// Update
+
+// Delete
+async function deleteRecipe(recipeId, user_id) {
+  try {
+    const result = await knex("custom_recipe")
+      .where({ uuid: recipeId, user_id: user_id })
+      .del();
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const customRecipeModel = {
+  createRecipe,
+  getallRecipes,
+  getRecipe,
+  deleteRecipe,
+};
 
 export default customRecipeModel;
