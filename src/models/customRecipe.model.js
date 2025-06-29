@@ -53,7 +53,8 @@ async function getRecipe(uuid, user_id) {
         "ingredients",
         "steps",
         "ready_in_minutes",
-        "servings"
+        "servings",
+        "cuisine"
       )
       .from("custom_recipe")
       .where({ uuid: uuid, user_id: user_id });
@@ -64,6 +65,7 @@ async function getRecipe(uuid, user_id) {
       steps: rows[0].steps,
       readyInMinutes: rows[0].ready_in_minutes,
       servings: rows[0].servings,
+      cuisine: rows[0].cuisine,
     };
     return result;
   } catch (error) {
