@@ -69,6 +69,40 @@ customRecipeController.get("/:uuid", async (req, res) => {
   }
 });
 
+// == Update ==
+customRecipeController.put("/:recipeId", async (req, res) => {
+  const { recipeId } = req.params;
+  const email = req.user.email;
+  const userId = await getUserIdFromEmail(email);
+  const { name, cuisine, ingredients, steps, notes, readyInMinutes, servings } =
+    req.body;
+
+  try {
+    const updatedRecipe = await customRecipeModel.updateRecipe(
+      recipeId,
+      userId,
+      {
+        name,
+        cuisine,
+        ingredients,
+        steps,
+        notes,
+        readyInMinutes,
+        servings,
+      }
+    );
+    console.log("Updated recipe:", updatedRecipe);
+
+    res.json(updatedRecipe);
+  } catch (error) {
+    console.error(error);
+    res.status(500);
+    res.json({
+      message: "An error occurred when trying to update this recipe.",
+    });
+  }
+});
+
 // Delete custom recipe by uuid
 customRecipeController.delete("/:recipeId", async (req, res) => {
   const { recipeId } = req.params;

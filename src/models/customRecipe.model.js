@@ -74,6 +74,24 @@ async function getRecipe(uuid, user_id) {
 }
 
 // Update
+async function updateRecipe(recipeId, user_id, data) {
+  const recipeData = {
+    name: data.name,
+    cuisine: data.cuisine,
+    ingredients: JSON.stringify(data.ingredients),
+    steps: JSON.stringify(data.steps),
+    ready_in_minutes: data.readyInMinutes,
+    servings: data.servings,
+  };
+  try {
+    const result = await knex("custom_recipe")
+      .where({ uuid: recipeId, user_id: user_id })
+      .update(recipeData);
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 // Delete
 async function deleteRecipe(recipeId, user_id) {
@@ -92,6 +110,7 @@ const customRecipeModel = {
   getallRecipes,
   getRecipe,
   deleteRecipe,
+  updateRecipe,
 };
 
 export default customRecipeModel;
