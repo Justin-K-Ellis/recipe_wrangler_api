@@ -3,7 +3,8 @@ import externalRecipeModel from "../models/externalRecipe.model.js";
 
 const externalRecipeController = express.Router();
 
-externalRecipeController.get("/:searchTerm", async (req, res) => {
+// Search for a recipe by search term
+externalRecipeController.get("/search/:searchTerm", async (req, res) => {
   const { searchTerm } = req.params;
   try {
     const result = await externalRecipeModel.getRecipeBySearch(searchTerm);
@@ -18,6 +19,7 @@ externalRecipeController.get("/:searchTerm", async (req, res) => {
   }
 });
 
+// Get recipe details by ID
 externalRecipeController.get("/id/:id", async (req, res) => {
   const { id } = req.params;
   const result = await externalRecipeModel.getRecipeById(id);
@@ -33,14 +35,17 @@ externalRecipeController.get("/id/:id", async (req, res) => {
   }
 });
 
+// Favorite a recipe
 externalRecipeController.post("/favorite/:recipeId", async (req, res) => {
   const { recipeId } = req.params;
   const firebaseId = req.user.uid;
+  const { name } = req.body;
 
   try {
     const result = await externalRecipeModel.favoriteRecipe(
       recipeId,
-      firebaseId
+      firebaseId,
+      name
     );
     console.log(result);
     res.json(result);
@@ -51,6 +56,7 @@ externalRecipeController.post("/favorite/:recipeId", async (req, res) => {
   }
 });
 
+// Unfavorite a recipe
 externalRecipeController.put("/unfavorite/:recipeId", async (req, res) => {
   const { recipeId } = req.params;
   const firebaseId = req.user.uid;
@@ -65,6 +71,23 @@ externalRecipeController.put("/unfavorite/:recipeId", async (req, res) => {
     console.error(error);
     res.status(500);
     res.json({ message: "Something went wrong when unfavoriting the recipe." });
+  }
+});
+
+// Get all favorite recipes for a user
+externalRecipeController.get("/favorites", async (req, res) => {
+  const firebaseId = req.user.uid;
+  try {
+    const favorites = await externalRecipeModel.getAllFavoriteRecipes(
+      firebaseId
+    );
+    console.log("favorites:", favorites);
+    // res.end();
+    res.json(favorites);
+  } catch (error) {
+    console.error(error);
+    res.status(500);
+    res.json({ message: "Something went wrong when fetching favorites." });
   }
 });
 

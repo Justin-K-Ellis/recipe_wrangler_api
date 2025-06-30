@@ -50,7 +50,7 @@ async function getRecipeById(id) {
   return result;
 }
 
-async function favoriteRecipe(recipeId, firebaseId) {
+async function favoriteRecipe(recipeId, firebaseId, name) {
   // Get user id
   const userRows = await knex("user_data")
     .select("id")
@@ -67,6 +67,7 @@ async function favoriteRecipe(recipeId, firebaseId) {
     // Insert recipe in external_recipe table
     const recipeRows = await knex("external_recipe").returning("id").insert({
       dish_id: recipeId,
+      name: name,
     });
     const externalId = recipeRows[0].id;
 
@@ -122,11 +123,42 @@ async function unfavoriteRecipe(recipeId, firebaseId) {
   return result;
 }
 
+async function getAllFavoriteRecipes(firebaseId) {
+  // Get user id
+  const userRows = await knex("user_data")
+    .select("id")
+    .where("firebase_id", firebaseId);
+  const userId = userRows[0].id;
+
+  const data = await knex("user_external_recipe")
+    .join(
+      "external_recipe",
+      "user_external_recipe.external_recipe_id",
+      "external_recipe.id"
+    )
+    .select("external_recipe.*")
+    .where({
+      "user_external_recipe.user_id": userId,
+      "user_external_recipe.liked": true,
+    });
+
+  const favorites = data.map((recipe) => {
+    return {
+      externalId: recipe.dish_id,
+      name: recipe.name,
+      cuisine: "",
+    };
+  });
+
+  return favorites;
+}
+
 const externalRecipeModel = {
   getRecipeBySearch,
   getRecipeById,
   favoriteRecipe,
   unfavoriteRecipe,
+  getAllFavoriteRecipes,
 };
 
 export default externalRecipeModel;
