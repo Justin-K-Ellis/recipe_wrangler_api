@@ -83,7 +83,7 @@ async function favoriteRecipe(recipeId, firebaseId) {
       user_id: userId,
       external_recipe_id: recipeId,
     });
-    const userExternalCount = likedRows[0].count;
+    const userExternalCount = parseInt(likedRows[0].count);
 
     if (userExternalCount === 1) return;
 
