@@ -51,4 +51,21 @@ externalRecipeController.post("/favorite/:recipeId", async (req, res) => {
   }
 });
 
+externalRecipeController.put("/unfavorite/:recipeId", async (req, res) => {
+  const { recipeId } = req.params;
+  const firebaseId = req.user.uid;
+
+  try {
+    const result = await externalRecipeModel.unfavoriteRecipe(
+      recipeId,
+      firebaseId
+    );
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500);
+    res.json({ message: "Something went wrong when unfavoriting the recipe." });
+  }
+});
+
 export default externalRecipeController;

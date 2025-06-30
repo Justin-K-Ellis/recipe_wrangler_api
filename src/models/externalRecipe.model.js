@@ -126,6 +126,7 @@ const externalRecipeModel = {
   getRecipeBySearch,
   getRecipeById,
   favoriteRecipe,
+  unfavoriteRecipe,
 };
 
 export default externalRecipeModel;
