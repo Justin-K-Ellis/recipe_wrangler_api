@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import knex from "../knex.js";
 
 dotenv.config();
 const apiKey = process.env.SPOONTACULAR_API;
@@ -49,6 +50,36 @@ async function getRecipeById(id) {
   return result;
 }
 
-const externalRecipeModel = { getRecipeBySearch, getRecipeById };
+async function favoriteRecipe(recipeId, firebaseId) {
+  // Get user id
+  const userRows = await knex("user_data")
+    .select("id")
+    .where("firebase_id", firebaseId);
+  const userId = userRows[0].id;
+
+  // TODO: either insert dishID into external_recipe table and then do business with
+  // user_external_recipe table, or do a migration to simplify and just have one table
+  // for external recipes.
+
+  // Insert recipe in external_recipe table
+  const recipeRows = await knex("external_recipe").returning("id").insert({
+    dish_id: recipeId,
+  });
+  const externalId = recipeRows[0].id;
+
+  // Insert into user_external_recipe table
+  const result = await knex("user_external_recipe").insert({
+    user_id: userId,
+    external_recipe_id: externalId,
+    liked: true,
+  });
+  return result;
+}
+
+const externalRecipeModel = {
+  getRecipeBySearch,
+  getRecipeById,
+  favoriteRecipe,
+};
 
 export default externalRecipeModel;

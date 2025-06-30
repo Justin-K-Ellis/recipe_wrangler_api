@@ -33,4 +33,22 @@ externalRecipeController.get("/id/:id", async (req, res) => {
   }
 });
 
+externalRecipeController.post("/favorite/:recipeId", async (req, res) => {
+  const { recipeId } = req.params;
+  const firebaseId = req.user.uid;
+
+  try {
+    const result = await externalRecipeModel.favoriteRecipe(
+      recipeId,
+      firebaseId
+    );
+    console.log(result);
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500);
+    res.json({ message: "Something went wrong when favoriting the recipe." });
+  }
+});
+
 export default externalRecipeController;
