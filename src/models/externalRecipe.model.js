@@ -61,7 +61,7 @@ async function favoriteRecipe(recipeId, firebaseId) {
   const existingRecipeRows = await knex("external_recipe")
     .count("id as count")
     .where("dish_id", recipeId);
-  const recipeCount = existingRecipeRows[0].count;
+  const recipeCount = parseInt(existingRecipeRows[0].count);
 
   if (recipeCount === 0) {
     // Insert recipe in external_recipe table
