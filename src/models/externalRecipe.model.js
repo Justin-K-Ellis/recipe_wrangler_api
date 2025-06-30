@@ -57,22 +57,68 @@ async function favoriteRecipe(recipeId, firebaseId) {
     .where("firebase_id", firebaseId);
   const userId = userRows[0].id;
 
-  // TODO: either insert dishID into external_recipe table and then do business with
-  // user_external_recipe table, or do a migration to simplify and just have one table
-  // for external recipes.
+  // Check if recipe already exists in external_recipe table
+  const existingRecipeRows = await knex("external_recipe")
+    .count("id as count")
+    .where("dish_id", recipeId);
+  const recipeCount = existingRecipeRows[0].count;
 
-  // Insert recipe in external_recipe table
-  const recipeRows = await knex("external_recipe").returning("id").insert({
-    dish_id: recipeId,
-  });
+  if (recipeCount === 0) {
+    // Insert recipe in external_recipe table
+    const recipeRows = await knex("external_recipe").returning("id").insert({
+      dish_id: recipeId,
+    });
+    const externalId = recipeRows[0].id;
+
+    // Insert into user_external_recipe table
+    const result = await knex("user_external_recipe").insert({
+      user_id: userId,
+      external_recipe_id: externalId,
+      liked: true,
+    });
+    return result;
+  } else if (recipeCount === 1) {
+    // Check if recipe is already liked by user
+    const likedRows = await knex("user_external_recipe").count().where({
+      user_id: userId,
+      external_recipe_id: recipeId,
+    });
+    const userExternalCount = likedRows[0].count;
+
+    if (userExternalCount === 1) return;
+
+    if (userExternalCount === 0) {
+      // If recipe is not liked by user, insert it
+      const result = await knex("user_external_recipe").insert({
+        user_id: userId,
+        external_recipe_id: externalId,
+        liked: true,
+      });
+      return result;
+    }
+  }
+}
+
+async function unfavoriteRecipe(recipeId, firebaseId) {
+  // Get user id
+  const userRows = await knex("user_data")
+    .select("id")
+    .where("firebase_id", firebaseId);
+  const userId = userRows[0].id;
+
+  // Get external recipe DB id
+  const recipeRows = await knex("external_recipe")
+    .select("id")
+    .where("dish_id", recipeId);
   const externalId = recipeRows[0].id;
 
-  // Insert into user_external_recipe table
-  const result = await knex("user_external_recipe").insert({
-    user_id: userId,
-    external_recipe_id: externalId,
-    liked: true,
-  });
+  // Set liked to false in user_external_recipe table
+  const result = await knex("user_external_recipe")
+    .where({
+      user_id: userId,
+      external_recipe_id: externalId,
+    })
+    .update({ liked: false });
   return result;
 }
 
