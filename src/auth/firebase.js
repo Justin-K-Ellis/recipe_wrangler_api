@@ -4,8 +4,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// const serviceAccount = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS);
-const serviceAccount = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+const serviceAccount = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+// const serviceAccount = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
 const app = initializeApp({
   credential: cert(serviceAccount),
